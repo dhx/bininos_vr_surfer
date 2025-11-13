@@ -10,7 +10,7 @@ extends Node3D
 
 var ocean_mesh: MeshInstance3D
 var original_vertices: PackedVector3Array
-var plane_mesh: PlaneMesh
+var plane_mesh: ArrayMesh
 var time: float = 0.0
 
 func _ready():
@@ -18,10 +18,14 @@ func _ready():
 	
 func create_ocean_mesh():
 	# Create the ocean plane
-	plane_mesh = PlaneMesh.new()
-	plane_mesh.size = Vector2(100, 100)
-	plane_mesh.subdivide_width = mesh_resolution
-	plane_mesh.subdivide_depth = mesh_resolution
+	var primitive_plane = PlaneMesh.new()
+	primitive_plane.size = Vector2(100, 100)
+	primitive_plane.subdivide_width = mesh_resolution
+	primitive_plane.subdivide_depth = mesh_resolution
+	
+	# Convert PlaneMesh to ArrayMesh for MeshDataTool compatibility
+	plane_mesh = ArrayMesh.new()
+	plane_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, primitive_plane.get_mesh_arrays())
 	
 	# Create MeshInstance3D
 	ocean_mesh = MeshInstance3D.new()
