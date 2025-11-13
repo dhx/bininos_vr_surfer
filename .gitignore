@@ -1,0 +1,12 @@
+# Godot-generated folders
+.godot/
+.import/
+
+# Build outputs
+build/
+export/
+
+# Temporary files
+*.tmp
+*.log
+.DS_Store

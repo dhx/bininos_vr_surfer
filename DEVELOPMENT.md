@@ -104,4 +104,11 @@ bininos_vr_surfer/
 - Keine Sound/Musik-Integration
 - Rudimentäres Umgebungs-Design
 
+## Automatisierung & Workflow
+
+- **Checks:** GitHub Actions (`.github/workflows/ci.yml`) lädt die Godot-CLI (4.3) im Headless-Modus und führt `godot --headless --path . --check-only` aus. Lokale Commits sollten denselben Befehl nutzen, um Syntaxfehler früh zu erkennen.
+- **Releases:** Tags nach dem Muster `v*` triggern `.github/workflows/release.yml`. Der Job erzeugt eine `build/bininos_vr_surfer.pck` sowie ein Source-Tarball und veröffentlicht beides automatisch im GitHub-Release.
+- **Erweiterungen:** Für signierte Android-/Quest-Builds müssen Android SDK, Export-Templates und Keystore-Secrets (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_ALIAS_PASSWORD`) im Repository hinterlegt werden. Danach kann der Release-Workflow um einen zusätzlichen Export-Schritt erweitert werden.
+- **Copilot-Regeln:** Projektspezifische Hinweise für GitHub Copilot liegen in `.github/copilot-instructions.md` und beschreiben Build-, Test- und VR-spezifische Besonderheiten.
+
 Diese MVP-Version bietet eine solide Grundlage für weiteres Prototyping und Feature-Entwicklung des VR-Surfing-Erlebnisses.
