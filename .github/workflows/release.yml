@@ -31,12 +31,27 @@ jobs:
         if: steps.cache-godot.outputs.cache-hit != 'true'
         run: |
           mkdir -p godot-headless
-          curl -L https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64_console.zip -o /tmp/godot.zip
+          curl -L https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip -o /tmp/godot.zip
+          # Verify download
+          if [ ! -s /tmp/godot.zip ]; then
+            echo "Error: Downloaded file is empty"
+            exit 1
+          fi
+          file /tmp/godot.zip
           unzip -q /tmp/godot.zip -d godot-headless
-          chmod +x godot-headless/Godot_v${GODOT_VERSION}-stable_linux.x86_64_console
+          # Find the actual binary name (it may vary slightly)
+          GODOT_BINARY=$(find godot-headless -name "Godot_v${GODOT_VERSION}*" -type f -executable | head -1)
+          if [ -z "$GODOT_BINARY" ]; then
+            echo "Error: Could not find Godot binary"
+            ls -la godot-headless/
+            exit 1
+          fi
+          chmod +x "$GODOT_BINARY"
 
       - name: Install Godot CLI
-        run: sudo install -m 0755 godot-headless/Godot_v${GODOT_VERSION}-stable_linux.x86_64_console /usr/local/bin/godot
+        run: |
+          GODOT_BINARY=$(find godot-headless -name "Godot_v${GODOT_VERSION}*" -type f -executable | head -1)
+          sudo install -m 0755 "$GODOT_BINARY" /usr/local/bin/godot
 
       - name: Verify Godot version
         run: godot --version
