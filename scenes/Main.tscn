@@ -1,0 +1,59 @@
+[gd_scene load_steps=6 format=3 uid="uid://dklrchhe68oa4"]
+
+[ext_resource type="Script" path="res://scripts/Main.gd" id="1_fxj5x"]
+[ext_resource type="Script" path="res://scripts/WaveSystem.gd" id="2_ww5pj"]
+[ext_resource type="Script" path="res://scripts/BeachEnvironment.gd" id="3_beach_env"]
+[ext_resource type="Script" path="res://scripts/SurferController.gd" id="4_surfer_ctrl"]
+
+[sub_resource type="Environment" id="Environment_1hjv4"]
+background_mode = 1
+background_color = Color(0.53, 0.81, 0.92, 1)
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.3
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_fxj5x")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+
+[node name="LeftController" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.5, 0)
+tracker = &"left_hand"
+
+[node name="RightController" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.5, 0)
+tracker = &"right_hand"
+
+[node name="Environment" type="Node3D" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 10, 0)
+light_energy = 0.8
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
+environment = SubResource("Environment_1hjv4")
+
+[node name="WaveSystem" type="Node3D" parent="."]
+script = ExtResource("2_ww5pj")
+
+[node name="Beach" type="Node3D" parent="."]
+script = ExtResource("3_beach_env")
+
+[node name="BeachTerrain" type="StaticBody3D" parent="Beach"]
+
+[node name="BeachMesh" type="MeshInstance3D" parent="Beach/BeachTerrain"]
+transform = Transform3D(50, 0, 0, 0, 1, 0, 0, 0, 50, 0, -2, 25)
+
+[node name="BeachCollision" type="CollisionShape3D" parent="Beach/BeachTerrain"]
+transform = Transform3D(50, 0, 0, 0, 1, 0, 0, 0, 50, 0, -2, 25)
+
+[node name="Surfer" type="Node3D" parent="."]
+
+[node name="SurferBody" type="CharacterBody3D" parent="Surfer"]
+script = ExtResource("4_surfer_ctrl")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
